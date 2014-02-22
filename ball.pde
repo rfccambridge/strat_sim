@@ -1,35 +1,56 @@
-class Ball {
+
+/*
+  handles bouncing for robots and soccerball
+*/
+
+abstract class Ball {
+  
   PVector position;
   PVector velocity;
-
-  int r = 5;
-  int m = 1;
-  int speed = 15;
   
-  Ball() {
-    this.reset();
+  // how bouncy the ball is
+  float bnc = -.5;
+  float r, m;
+  color c;
+
+  Ball(float x, float y, float r_, float m_, color c_) {
+    position = new PVector(x, y);
+    velocity = new PVector(3,3);
+    r = r_;
+    m = m_;
+    c = c_;
   }
 
-  void update(Robot rob) {
+  public void update() {
+    velocity.limit(5);
     position.add(velocity);
-    this.check_collision(rob);
-    fill(150);
-    ellipse(position.x, position.y, 2*r,2*r);
+    //velocity.mult(.9);
+    noStroke();
+    fill(c);
+    ellipse(position.x,position.y,2*r,2*r);
   }
-  
-  public void reset() {
-    this.position = new PVector(random(width), random(height - 2*goal_height));
-    this.velocity = this.aim();
+
+  public void checkBoundaryCollision() {
+    if (position.x > width-r) {
+      position.x = width-r;
+      velocity.x *= bnc;
+    } 
+    else if (position.x < r) {
+      position.x = r;
+      velocity.x *= bnc;
+    } 
+    else if (position.y > height-r) {
+      position.y = height-r;
+      velocity.y *= bnc;
+    } 
+    else if (position.y < r) {
+      position.y = r;
+      velocity.y *= bnc;
+    }
   }
-  
-  public PVector aim() {
-    PVector target = new PVector(random(goal_xl,goal_xr),goal_y);
-    PVector diff = PVector.sub(target, this.position);
-    diff.setMag(speed);
-    return diff;
-  }
-  
-  public void check_collision(Robot other) {
+
+  public void checkCollision(Ball other) {
+
     // get distances between the balls components
     PVector bVect = PVector.sub(other.position, position);
 
@@ -55,7 +76,7 @@ class Ball {
          bTemp[0].position.x and bTemp[0].position.y will initialize
          automatically to 0.0, which is what you want
          since b[1] will rotate around b[0] */
-      bTemp[1].x  = cosine * bVect.x + sine * bVect.y;
+        bTemp[1].x  = cosine * bVect.x + sine * bVect.y;
       bTemp[1].y  = cosine * bVect.y - sine * bVect.x;
 
       // rotate Temporary velocities
@@ -63,7 +84,7 @@ class Ball {
         new PVector(), new PVector()
         };
 
-      vTemp[0].x  = cosine * velocity.x + sine * velocity.y;
+        vTemp[0].x  = cosine * velocity.x + sine * velocity.y;
       vTemp[0].y  = cosine * velocity.y - sine * velocity.x;
       vTemp[1].x  = cosine * other.velocity.x + sine * other.velocity.y;
       vTemp[1].y  = cosine * other.velocity.y - sine * other.velocity.x;
@@ -109,8 +130,19 @@ class Ball {
       // update velocities
       velocity.x = cosine * vFinal[0].x - sine * vFinal[0].y;
       velocity.y = cosine * vFinal[0].y + sine * vFinal[0].x;
-    }
+      other.velocity.x = cosine * vFinal[1].x - sine * vFinal[1].y;
+      other.velocity.y = cosine * vFinal[1].y + sine * vFinal[1].x;
+      
+      // making sure they're not together
+      PVector dist = PVector.sub(position,other.position);
+      float diff = r + other.r - dist.mag(); 
+      if (diff > 0) {
+        // intersection
+        dist.setMag(diff);
+        position.add(dist);
+        other.position.sub(dist);
+      }
 
+    }
   }
 }
-

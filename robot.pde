@@ -1,23 +1,56 @@
-class Robot {
+
+
+class Robot extends Ball {
   
-  private PVector position;
-  private PVector velocity;
-  private int r = 20;
-  private int m = 100;
-  float max_mag = 5;
+  float max_mag = 4;
   
-  Behavior b;
-  
-  Robot() {
-    position = new PVector(width/2, goal_y);
-    velocity = new PVector(0,0);
-    b = new Behavior();
+  public Robot() {
+    super(random(width),random(height),15,15,color(100,100,100));
   }
   
-  public void update(Ball ball) {
-    this.velocity = b.behave(this.position, this.velocity, ball.position, ball.velocity);
-    this.velocity.limit(max_mag);
-    this.position.add(this.velocity);
-    ellipse(position.x,position.y,2*r,2*r);
+  public void instruct(PVector target, Boolean kick) {
+    // go to target
+    velocity = PVector.sub(target,position);
+    velocity.limit(max_mag);
   }
 }
+
+// group of robot information for passing to behavior
+class Team {
+  int n;
+  PVector[] positions;
+  PVector[] velocities;
+  
+  public Team(int n_) {
+    n = n_;
+    positions = new PVector[n];
+    velocities = new PVector[n];
+    
+    for (int i=0; i < n; i++) {
+      positions[i] = new PVector();
+      velocities[i] = new PVector();
+    }
+  }
+}
+
+// for passing instructions back from behavior
+class CmdSet {
+  int n;
+  PVector[] targets;
+  Boolean[] kicks;
+  
+  public CmdSet(int n_) {
+    n = n_;
+    targets = new PVector[n];
+    kicks = new Boolean[n];
+    
+    for (int i=0; i<n; i++) {
+      targets[i] = new PVector();
+      kicks[i] = false;
+    }
+  }
+}
+    
+    
+    
+  

@@ -1,80 +1,91 @@
 /**
- * RFC Comp
- * Goalie simulator
- * by Erik Schluntz
+ * Strategy Simulator
+ * by Erik Schluntz, RFC Cambridge
  * 
- * Write a behavior for the goalie to block the ball!
  */
  
-Ball b;
-Robot r;
-int W = 600;
-int H = 600;
-int goal_height = 50;
-int goal_width = 200;
-int goal_y = H - goal_height;
-int goal_xl = W / 2 - goal_width /2;
-int goal_xr = W / 2 + goal_width /2;
+int goal_width = 100;
 
-int score;
-int trials;
+Robot[] robots;
+int countA = 6; // goal is on the right
+int countB = 6;
+
+Behavior coachA;
+Behavior coachB;
+
+SoccerBall ball;
 
 void setup() {
-  size(W, H);
-  if (testing_mode > 0)
-    frameRate(30);
-  else
-    frameRate(120);
-  fill(100);
-  stroke(100);
-  b = new Ball();
-  r = new Robot();
+  size(800, 600);
+  frameRate(60);
   
-  score = 0;
-  trials = 0;
+  robots = new Robot[countA+countB];
+  ball = new SoccerBall();
+  coachA = new BehaveFollow(true);
+  coachB = new BehaveFollow(false);
+  coachA.reset("start1");
+  coachB.reset("start2");
+  
+  for (int i=0; i<countA; i++) {
+    robots[i] = new Robot();
+  }
+  for (int i=countA; i<countB+countA; i++) {
+    robots[i] = new Robot();
+  }
+  
+  
 }
 
 void draw() {
-  
   background(51);
-  rect(goal_xl, goal_y, goal_width, goal_height);
-  line(0,goal_y,width,goal_y);
-  b.update(r);
-  if (testing_mode == 2)
-    b.position.set(mouseX,mouseY);
-  r.update(b);
   
-  if (check_reset(b,r)) {
-    b.reset();
-    trials++;
-    print("Score: " + score + " / " + trials + "\n");
+  // thinking
+  Team teamA = collect(robots,countA,countB,true);
+  Team teamB = collect(robots,countA,countB,false);
+  CmdSet cA = coachA.update(teamA,teamB,new SoccerBall(ball));
+  CmdSet cB = coachB.update(teamB,teamA,new SoccerBall(ball));
+  CmdSet cAll = new CmdSet(countA+countB);
+  cAll.targets = (PVector[])concat(cA.targets,cB.targets);
+  cAll.kicks = (Boolean[])concat(cA.kicks,cB.kicks);
+
+  // updating
+  for (int i = 0; i < countA+countB; i++) {
+    Robot r = robots[i];
+    r.instruct(cAll.targets[i], cAll.kicks[i]);
+    r.update();
+    r.checkBoundaryCollision();
+    ball.checkCollision(r);
+    
+    // checking collision
+    for (int j = i + 1; j < countA+countB; j++) {
+      r.checkCollision(robots[j]);
+    }
   }
   
+  //soccer ball
+  ball.update();
+  ball.checkBoundaryCollision();
 }
 
+// takes a slice of the list and turns it into a team object
+public Team collect(Robot[] rs, int ca, int cb, Boolean forward) {
+  Team team;
 
-/*
-returns true if the simulation should keep going
-false if the simulation should stop
-prints the result
-*/
-boolean check_reset(Ball b, Robot r) {
-  if (testing_mode == 2)
-    return(false);
-  // first checking for goals
-  if (b.position.x > goal_xl && b.position.x < goal_xr && b.position.y < height && b.position.y > goal_y) {
-    print("goal\n");
-    return(true);
+  if (forward) {
+    team = new Team(ca);
+    for (int i = 0; i < ca; i++) {
+      team.positions[i] = rs[i].position;
+      team.velocities[i] = rs[i].velocity;
+    }
   }
-  if (b.position.x > width || b.position.x < 0 || b.position.y < 0 || b.position.y > height) {
-    score++;
-    print("blocked\n");
-    return(true);
+  else {
+    team = new Team(cb);
+    for (int i = ca; i < cb; i++) {
+      team.positions[i] = rs[i].position;
+      team.velocities[i] = rs[i].velocity;
+    }
   }
-  return(false); 
+  return team;
 }
-  
-
-
 
 
