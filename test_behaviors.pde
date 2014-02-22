@@ -13,7 +13,7 @@ class BehaveFollow extends Behavior {
     CmdSet cmds = new CmdSet(n);
     
     for (int i=0; i<n; i++) {
-      cmds.targets[i] = ball.position;
+      cmds.targets[i] = new PVector(mouseX,mouseY);
     }
     return cmds;
   }

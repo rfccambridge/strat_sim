@@ -17,7 +17,7 @@ SoccerBall ball;
 
 void setup() {
   size(800, 600);
-  frameRate(60);
+  frameRate(30);
   
   robots = new Robot[countA+countB];
   ball = new SoccerBall();

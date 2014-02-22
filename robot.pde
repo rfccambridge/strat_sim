@@ -2,7 +2,9 @@
 
 class Robot extends Ball {
   
-  float max_mag = 4;
+  float max_mag = 5;
+  float max_accel = 2;
+  float drag = .8;
   
   public Robot() {
     super(random(width),random(height),15,15,color(100,100,100));
@@ -10,8 +12,11 @@ class Robot extends Ball {
   
   public void instruct(PVector target, Boolean kick) {
     // go to target
-    velocity = PVector.sub(target,position);
-    velocity.limit(max_mag);
+    PVector accel = PVector.sub(target,position);
+    accel.setMag(accel.mag()*accel.mag()/100);
+    accel.limit(max_accel);
+    velocity.add(accel);
+    velocity.mult(drag);
   }
 }
 

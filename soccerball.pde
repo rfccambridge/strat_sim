@@ -10,4 +10,5 @@ class SoccerBall extends Ball {
     this.position = b.position.get();
     this.velocity = b.velocity.get();
   }
+
 }
