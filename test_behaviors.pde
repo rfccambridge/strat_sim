@@ -14,6 +14,9 @@ class BehaveFollow extends Behavior {
     
     for (int i=0; i<n; i++) {
       cmds.targets[i] = new PVector(mouseX,mouseY);
+      if (mousePressed) {
+        cmds.kicks[i] = PVector.sub(ball.position, myTeam.positions[i]);
+      }
     }
     return cmds;
   }

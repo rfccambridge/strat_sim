@@ -17,7 +17,7 @@ abstract class Ball {
 
   Ball(float x, float y, float r_, float m_, color c_) {
     position = new PVector(x, y);
-    velocity = new PVector(3,3);
+    velocity = new PVector(0,0);
     r = r_;
     m = m_;
     c = c_;
@@ -26,7 +26,8 @@ abstract class Ball {
   public void update() {
     position.add(velocity);
     //velocity.mult(.9);
-    noStroke();
+    strokeWeight(1);
+    stroke(51);
     fill(c);
     ellipse(position.x,position.y,2*r,2*r);
   }

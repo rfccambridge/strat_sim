@@ -4,11 +4,15 @@
  * 
  */
  
-int goal_width = 100;
+int goal_width = 150;
 
 Robot[] robots;
 int countA = 6; // goal is on the right
 int countB = 6;
+
+int scoreA = 0;
+int scoreB = 0;
+int time = 0;
 
 Behavior coachA;
 Behavior coachB;
@@ -16,28 +20,28 @@ Behavior coachB;
 SoccerBall ball;
 
 void setup() {
-  size(800, 600);
+  size(1000, 600);
   frameRate(30);
   
   robots = new Robot[countA+countB];
   ball = new SoccerBall();
   coachA = new BehaveFollow(true);
   coachB = new BehaveFollow(false);
-  coachA.reset("start1");
-  coachB.reset("start2");
   
-  for (int i=0; i<countA; i++) {
-    robots[i] = new Robot();
-  }
-  for (int i=countA; i<countB+countA; i++) {
-    robots[i] = new Robot();
-  }
-  
-  
+  reset();
 }
 
 void draw() {
+  // drawing field
   background(51);
+  fill(51,150,51);
+  rect(0,(height-goal_width)/2,5,goal_width);
+  rect(width-5,(height-goal_width)/2,5,goal_width);
+  stroke(100);
+  strokeWeight(2);
+  line(width/2,0,width/2,height);
+  noFill();
+  ellipse(width/2,height/2,200,200);
   
   // thinking
   Team teamA = collect(robots,countA,countB,true);
@@ -46,12 +50,12 @@ void draw() {
   CmdSet cB = coachB.update(teamB,teamA,new SoccerBall(ball));
   CmdSet cAll = new CmdSet(countA+countB);
   cAll.targets = (PVector[])concat(cA.targets,cB.targets);
-  cAll.kicks = (Boolean[])concat(cA.kicks,cB.kicks);
+  cAll.kicks = (PVector[])concat(cA.kicks,cB.kicks);
 
   // updating
   for (int i = 0; i < countA+countB; i++) {
     Robot r = robots[i];
-    r.instruct(cAll.targets[i], cAll.kicks[i]);
+    r.instruct(cAll.targets[i], cAll.kicks[i],ball);
     r.update();
     r.checkBoundaryCollision();
     ball.checkCollision(r);
@@ -65,6 +69,24 @@ void draw() {
   //soccer ball
   ball.update();
   ball.checkBoundaryCollision();
+  
+  time++;
+}
+
+public void reset() {
+  println("Goal!");
+  println("TeamA: " + scoreA + " TeamB: " + scoreB + " time: " + time);
+  coachA.reset("start1");
+  coachB.reset("start2");
+  
+  for (int i=0; i<countA; i++) {
+    robots[i] = new Robot(true);
+  }
+  for (int i=countA; i<countB+countA; i++) {
+    robots[i] = new Robot(false);
+  }
+  
+  ball = new SoccerBall();
 }
 
 // takes a slice of the list and turns it into a team object
