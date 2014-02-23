@@ -2,7 +2,7 @@
 abstract class Behavior {  
   // declare any variables you need between steps here
 
-  // true means goal is on right
+  // true means defend the right
   Behavior(Boolean side) {
   }
   

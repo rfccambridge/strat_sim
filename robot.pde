@@ -9,6 +9,8 @@ class Robot extends Ball {
   // kicking
 
   float kick_speed = 20;
+  float noise_scale = 2; 
+  float kick_range = 10;
   
   public Robot() {
     super(random(width),random(height),10,13,color(100,100,100));
@@ -41,19 +43,18 @@ class Robot extends Ball {
 
   
       kick.normalize();
-      PVector diff = PVector.sub(ball.position,position);
-      float dx = abs(diff.cross(kick).mag());
-      float dy = abs(diff.dot(kick));
+
+      float dist = PVector.sub(ball.position,position).mag();
       
-//      float max_x = r/2 + ball.r/2;
-//      float max_y = r + ball.r + 10;
-      float max_x = r/2 + ball.r;
-      float max_y = r + ball.r + 20;
       
-      if (dx < max_x && dy < max_y) {
+      
+      if (dist < kick_range + r + ball.r) {
         // in kicking range
         kick.setMag(kick_speed);
-        ball.velocity.add(kick);
+        PVector noise = PVector.random2D();
+        noise.mult(noise_scale);
+        kick.add(noise);
+        ball.velocity = kick.get();
       }
     } 
   }

@@ -7,15 +7,15 @@
 int goal_width = 150;
 
 Robot[] robots;
-int countA = 4; // goal is on the right
-int countB = 4;
+int countB = 6; // defends the right
+int countR = 6; // defends the left
 
-int scoreA = 0;
 int scoreB = 0;
+int scoreR = 0;
 int time = 0;
 
 Behavior coachA;
-Behavior coachB;
+Behavior coachR;
 
 SoccerBall ball;
 
@@ -23,10 +23,10 @@ void setup() {
   size(1000, 600);
   frameRate(30);
   
-  robots = new Robot[countA+countB];
+  robots = new Robot[countB+countR];
   ball = new SoccerBall();
   coachA = new BehaveWallDefense(true, width, height, (height-goal_width)/2, (height+goal_width)/2);
-  coachB = new BehaveSimplePassOffense(false, width, height, (height-goal_width)/2, (height+goal_width)/2);
+  coachR = new BehaveSimplePassOffense(false, width, height, (height-goal_width)/2, (height+goal_width)/2);
   
   reset();
 }
@@ -44,16 +44,16 @@ void draw() {
   ellipse(width/2,height/2,200,200);
   
   // thinking
-  Team teamA = collect(robots,countA,countB,true);
-  Team teamB = collect(robots,countA,countB,false);
-  CmdSet cA = coachA.update(teamA,teamB,new SoccerBall(ball));
-  CmdSet cB = coachB.update(teamB,teamA,new SoccerBall(ball));
-  CmdSet cAll = new CmdSet(countA+countB);
-  cAll.targets = (PVector[])concat(cA.targets,cB.targets);
-  cAll.kicks = (PVector[])concat(cA.kicks,cB.kicks);
+  Team scoreB = collect(robots,countB,countR,true);
+  Team teamR = collect(robots,countB,countR,false);
+  CmdSet cB = coachA.update(scoreB,teamR,new SoccerBall(ball));
+  CmdSet cR = coachR.update(teamR,scoreB,new SoccerBall(ball));
+  CmdSet cAll = new CmdSet(countB+countR);
+  cAll.targets = (PVector[])concat(cB.targets,cR.targets);
+  cAll.kicks = (PVector[])concat(cB.kicks,cR.kicks);
 
   // updating
-  for (int i = 0; i < countA+countB; i++) {
+  for (int i = 0; i < countB+countR; i++) {
     Robot r = robots[i];
     r.instruct(cAll.targets[i], cAll.kicks[i],ball);
     r.update();
@@ -61,7 +61,7 @@ void draw() {
     ball.checkCollision(r);
     
     // checking collision
-    for (int j = i + 1; j < countA+countB; j++) {
+    for (int j = i + 1; j < countB+countR; j++) {
       r.checkCollision(robots[j]);
     }
   }
@@ -75,14 +75,14 @@ void draw() {
 
 public void reset() {
   println("Goal!");
-  println("TeamA: " + scoreA + " TeamB: " + scoreB + " time: " + time);
+  println("TeamA: " + scoreB + " Team Red: " + scoreR + " time: " + time);
   coachA.reset("start1");
-  coachB.reset("start2");
+  coachR.reset("start2");
   
-  for (int i=0; i<countA; i++) {
+  for (int i=0; i<countB; i++) {
     robots[i] = new Robot(true);
   }
-  for (int i=countA; i<countB+countA; i++) {
+  for (int i=countB; i<countR+countB; i++) {
     robots[i] = new Robot(false);
   }
   
@@ -90,21 +90,21 @@ public void reset() {
 }
 
 // takes a slice of the list and turns it into a team object
-public Team collect(Robot[] rs, int ca, int cb, Boolean forward) {
+public Team collect(Robot[] rs, int cb, int cr, Boolean forward) {
   Team team;
 
   if (forward) {
-    team = new Team(ca);
-    for (int i = 0; i < ca; i++) {
+    team = new Team(cb);
+    for (int i = 0; i < cb; i++) {
       team.positions[i] = rs[i].position;
       team.velocities[i] = rs[i].velocity;
     }
   }
   else {
-    team = new Team(cb);
-    for (int i = ca; i < ca+cb; i++) {
-      team.positions[i-ca] = rs[i].position;
-      team.velocities[i-ca] = rs[i].velocity;
+    team = new Team(cr);
+    for (int i = cb; i < cb+cr; i++) {
+      team.positions[i-cb] = rs[i].position;
+      team.velocities[i-cb] = rs[i].velocity;
     }
   }
   return team;

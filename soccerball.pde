@@ -30,7 +30,7 @@ class SoccerBall extends Ball {
       
       if (abs(position.y - height/2) < goal_width/2) {
         // goal
-        scoreA++;
+        scoreR++;
         reset();
       }
     } 
