@@ -72,7 +72,7 @@ class BehaveBlockDefense extends Behavior {
     }
     
     // Goalie robot
-    PVector goaliePos = ball.position;
+    PVector goaliePos = ball.position.get();
     if (this.side && goaliePos.x < (7.0/8)*this.fieldWidth) {
       float distToGoalBox = abs(goaliePos.x - (7.0/8)*this.fieldWidth);
       v.setMag(abs((distToGoalBox / v.x) * v.mag()));
@@ -130,9 +130,9 @@ class BehaveSimplePassOffense extends Behavior {
     float maxOfOpenings = 0;
     for (int i=1; i<n; i++) {
       // set x coordinate to be halfway between ball and goal, y coord between goal midpoint and ball
-      PVector homeBase = new PVector(this.side ? (1.0/8)*this.fieldWidth+5*robotRadius : (7.0/8)*this.fieldWidth-5*robotRadius, ((i-1)*1.0/(n-1))*fieldHeight);
+      PVector homeBase = new PVector(this.side ? (1.0/8)*this.fieldWidth+10*robotRadius : (7.0/8)*this.fieldWidth-10*robotRadius, ((i-1)*1.0/(n-1))*fieldHeight);
       PVector toBall = PVector.sub(ball.position, myTeam.positions[i]);
-      toBall.limit(5*robotRadius);
+      toBall.limit(10*robotRadius);
       cmds.targets[i] = PVector.add(homeBase, toBall);
       // determine kick direction by most open angle section
       int numCandidates = 4;
@@ -167,14 +167,14 @@ class BehaveSimplePassOffense extends Behavior {
     }
     
     // first navigate to the ball as long as you're not touching the ball
-    PVector dribblerToBall = PVector.sub(myTeam.positions[1], ball.position);
-    if (dribblerToBall.mag() <= 14) { // touching the ball
-      cmds.targets[1] = myTeam.positions[1];
-    } else {
-      PVector ballToGoal = PVector.sub(otherGoalMid, ball.position);
-      ballToGoal.limit(5);
-      cmds.targets[1] = PVector.sub(ball.position, ballToGoal);
-    }
+//    PVector dribblerToBall = PVector.sub(myTeam.positions[1], ball.position);
+//    if (dribblerToBall.mag() <= 14) { // touching the ball
+      cmds.targets[1] = ball.position.get();
+//    } else {
+//      PVector ballToGoal = PVector.sub(otherGoalMid, ball.position);
+//      ballToGoal.limit(5);
+//      cmds.targets[1] = PVector.sub(ball.position, ballToGoal);
+//    }
     if (this.side && cmds.targets[1].x < (1.0/8)*this.fieldWidth) {
       cmds.targets[1].x = (1.0/8)*this.fieldWidth;
     } else if (!this.side && cmds.targets[1].x > (7.0/8)*this.fieldWidth) {
@@ -185,7 +185,7 @@ class BehaveSimplePassOffense extends Behavior {
     
     // goalie
     PVector v = PVector.sub(goalMid, ball.position);
-    PVector goaliePos = ball.position;
+    PVector goaliePos = ball.position.get();
     if (this.side && goaliePos.x < (7.0/8)*this.fieldWidth) {
       float distToGoalBox = abs(goaliePos.x - (7.0/8)*this.fieldWidth);
       v.setMag(abs((distToGoalBox / v.x) * v.mag()));
@@ -197,7 +197,7 @@ class BehaveSimplePassOffense extends Behavior {
     }
     cmds.targets[0] = goaliePos;
     cmds.kicks[0] = PVector.sub(myTeam.positions[maxRobot], myTeam.positions[0]);
-
+    
     return cmds;
   }
 }

@@ -7,8 +7,8 @@
 int goal_width = 150;
 
 Robot[] robots;
-int countA = 6; // goal is on the right
-int countB = 6;
+int countA = 4; // goal is on the right
+int countB = 4;
 
 int scoreA = 0;
 int scoreB = 0;
@@ -25,7 +25,7 @@ void setup() {
   
   robots = new Robot[countA+countB];
   ball = new SoccerBall();
-  coachA = new BehavePointDefense(true, width, height, (height-goal_width)/2, (height+goal_width)/2);
+  coachA = new BehaveWallDefense(true, width, height, (height-goal_width)/2, (height+goal_width)/2);
   coachB = new BehaveSimplePassOffense(false, width, height, (height-goal_width)/2, (height+goal_width)/2);
   
   reset();
