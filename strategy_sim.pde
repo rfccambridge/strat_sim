@@ -46,6 +46,7 @@ void draw() {
   // thinking
   Team teamA = collect(robots,countA,countB,true);
   Team teamB = collect(robots,countA,countB,false);
+  println(teamB.positions);
   CmdSet cA = coachA.update(teamA,teamB,new SoccerBall(ball));
   CmdSet cB = coachB.update(teamB,teamA,new SoccerBall(ball));
   CmdSet cAll = new CmdSet(countA+countB);
@@ -102,9 +103,9 @@ public Team collect(Robot[] rs, int ca, int cb, Boolean forward) {
   }
   else {
     team = new Team(cb);
-    for (int i = ca; i < cb; i++) {
-      team.positions[i] = rs[i].position;
-      team.velocities[i] = rs[i].velocity;
+    for (int i = ca; i < ca+cb; i++) {
+      team.positions[i-ca] = rs[i].position;
+      team.velocities[i-ca] = rs[i].velocity;
     }
   }
   return team;
