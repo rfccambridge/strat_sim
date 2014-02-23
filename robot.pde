@@ -11,7 +11,7 @@ class Robot extends Ball {
   float kick_speed = 20;
   
   public Robot() {
-    super(random(width),random(height),13,13,color(100,100,100));
+    super(random(width),random(height),10,13,color(100,100,100));
   }
   public Robot(Boolean side) {
     //true means start on right
