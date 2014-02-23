@@ -25,7 +25,7 @@ void setup() {
   
   robots = new Robot[countA+countB];
   ball = new SoccerBall();
-  coachA = new BehaveBlockDefense(true, width, height, (height-goal_width)/2, (height+goal_width)/2);
+  coachA = new BehaveWallDefense(true, width, height, (height-goal_width)/2, (height+goal_width)/2);
   coachB = new BehaveFollow(false);
   
   reset();
