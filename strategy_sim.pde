@@ -25,8 +25,8 @@ void setup() {
   
   robots = new Robot[countA+countB];
   ball = new SoccerBall();
-  coachA = new BehaveWallDefense(true, width, height, (height-goal_width)/2, (height+goal_width)/2);
-  coachB = new BehaveFollow(false);
+  coachA = new BehavePointDefense(true, width, height, (height-goal_width)/2, (height+goal_width)/2);
+  coachB = new BehaveSimplePassOffense(false, width, height, (height-goal_width)/2, (height+goal_width)/2);
   
   reset();
 }
@@ -46,7 +46,6 @@ void draw() {
   // thinking
   Team teamA = collect(robots,countA,countB,true);
   Team teamB = collect(robots,countA,countB,false);
-  println(teamB.positions);
   CmdSet cA = coachA.update(teamA,teamB,new SoccerBall(ball));
   CmdSet cB = coachB.update(teamB,teamA,new SoccerBall(ball));
   CmdSet cAll = new CmdSet(countA+countB);

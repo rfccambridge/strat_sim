@@ -45,8 +45,10 @@ class Robot extends Ball {
       float dx = abs(diff.cross(kick).mag());
       float dy = abs(diff.dot(kick));
       
-      float max_x = r/2 + ball.r/2;
-      float max_y = r + ball.r + 10;
+//      float max_x = r/2 + ball.r/2;
+//      float max_y = r + ball.r + 10;
+      float max_x = r/2 + ball.r;
+      float max_y = r + ball.r + 20;
       
       if (dx < max_x && dy < max_y) {
         // in kicking range
