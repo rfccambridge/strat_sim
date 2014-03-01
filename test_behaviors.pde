@@ -244,33 +244,33 @@ class BehaveSurroundOffense extends Behavior {
     }*/
     float angles[] = new float[n];
     for (int i=1; i<n; i++) {
-      float edgeRat = 1.0 / 64.0;
+      float edgeRat = 1.0 / 128.0;
       float midRat = 1.0 / 128.0;
-      float farRat = 1.0 / 12.0;
+      float farRat = 1.0 / 24.0;
       float edgeBackDist = fieldWidth * 1.0 / 16.0;
       float midBackDist =  fieldWidth * 1.0 / 32.0;
       PVector homeBase;
       if (i == 2) {
 	float botPY = this.fieldHeight / 8.0;
-        homeBase = new PVector(this.side ? (edgeRat)*this.fieldWidth+10*robotRadius : (1.0-edgeRat)*this.fieldWidth-5*robotRadius, botPY);
+        homeBase = new PVector(this.side ? (edgeRat)*this.fieldWidth : (1.0-edgeRat)*this.fieldWidth, botPY);
       } else if (i == 3) {
 	float topPY = 7.0 * this.fieldHeight / 8.0;
-        homeBase = new PVector(this.side ? (edgeRat)*this.fieldWidth+10*robotRadius : (1.0-edgeRat)*this.fieldWidth-5*robotRadius, topPY);
+        homeBase = new PVector(this.side ? (edgeRat)*this.fieldWidth : (1.0-edgeRat)*this.fieldWidth, topPY);
       } else if (i == 4) {
 	//float midPY = this.fieldHeight / 2.0;
 	float midPY = ball.position.y;
 	if (midPY > 9.0 * this.fieldHeight / 16.0) midPY = 9.0 * this.fieldHeight / 16.0;
 	if (midPY < 7.0 * this.fieldHeight / 16.0) midPY = 7.0 * this.fieldHeight / 16.0;
 	//        homeBase = new PVector(this.side ? (midRat)*this.fieldWidth+10*robotRadius : max((1.0-midRat)*this.fieldWidth-10*robotRadius, midBackDist), midPY);
-	homeBase = new PVector(this.side ? (midRat)*this.fieldWidth+10*robotRadius : (1.0)*this.fieldWidth-5*robotRadius, midPY);
+	homeBase = new PVector(this.side ? (midRat)*this.fieldWidth : (1.0)*this.fieldWidth, midPY);
       } else if (i == 5) {
 	float farPY = ball.position.y;
 	if (farPY > 9.0 * this.fieldHeight / 16.0) farPY = 9.0 * this.fieldHeight / 16.0;
 	if (farPY < 7.0 * this.fieldHeight / 16.0) farPY = 7.0 * this.fieldHeight / 16.0;
-	homeBase = new PVector(this.side ? (farRat)*this.fieldWidth+10*robotRadius : (1.0-farRat)*this.fieldWidth-10*robotRadius, farPY);
+	homeBase = new PVector(this.side ? (farRat)*this.fieldWidth : (1.0-farRat)*this.fieldWidth, farPY);
       } else {
 	// set x coordinate to be halfway between ball and goal, y coord between goal midpoint and ball
-	homeBase = new PVector(this.side ? (1.0/8)*this.fieldWidth+10*robotRadius : (7.0/8)*this.fieldWidth-10*robotRadius, ((i-1)*1.0/(n-1))*fieldHeight);
+	homeBase = new PVector(this.side ? (1.0/8)*this.fieldWidth : (7.0/8)*this.fieldWidth, ((i-1)*1.0/(n-1))*fieldHeight);
       }
       PVector toBall = PVector.sub(ball.position, myTeam.positions[i]);
       toBall.limit(10*robotRadius);
