@@ -106,7 +106,9 @@ class BehaveSimplePassOffense extends Behavior {
   float fieldWidth, fieldHeight, goalTop, goalBottom, goalWidth;
   PVector goalMid, otherGoalMid;
   
-  public BehaveSimplePassOffense(Boolean side_, float fieldWidth_, float fieldHeight_, float goalTop_, float goalBottom_) {
+  public BehaveSimplePassOffense(Boolean side_, float fieldWidth_,
+				 float fieldHeight_, float goalTop_,
+				 float goalBottom_) {
     super(side_);
     this.side = side_;
     this.fieldWidth = fieldWidth_;
@@ -114,8 +116,10 @@ class BehaveSimplePassOffense extends Behavior {
     this.goalTop = goalTop_;
     this.goalBottom = goalBottom_;
     this.goalWidth = abs(goalBottom - goalTop);
-    this.goalMid = new PVector(this.side ? fieldWidth : 0, (goalTop + goalBottom) / 2);
-    this.otherGoalMid = new PVector(this.side ? 0 : fieldWidth, (goalTop + goalBottom) / 2);
+    this.goalMid = new PVector(this.side ?
+			       fieldWidth : 0, (goalTop + goalBottom) / 2);
+    this.otherGoalMid = new PVector(this.side ?
+				    0 : fieldWidth, (goalTop + goalBottom) / 2);
   }
   
   public void reset(String msg) {
@@ -124,29 +128,44 @@ class BehaveSimplePassOffense extends Behavior {
   public CmdSet update(Team myTeam, Team otherTeam, Ball ball) {
     int n = myTeam.n;
     CmdSet cmds = new CmdSet(n);
-    // let robot 0 be goalie, robot 1 a dribbler controlling the ball, other n-2 robots be in shooting range
     // n-2 robots get into shooting range
     int maxRobot = 2;
     float maxOfOpenings = 0;
     for (int i=1; i<n; i++) {
-      // set x coordinate to be halfway between ball and goal, y coord between goal midpoint and ball
-      PVector homeBase = new PVector(this.side ? (1.0/8)*this.fieldWidth+10*robotRadius : (7.0/8)*this.fieldWidth-10*robotRadius, ((i-1)*1.0/(n-1))*fieldHeight);
+      // set x coordinate to be halfway between ball and goal,
+      // y coord between goal midpoint and ball
+      PVector homeBase = new PVector(this.side ?
+				     (1.0/8)*this.fieldWidth+10*robotRadius :
+				     (7.0/8)*this.fieldWidth-10*robotRadius,
+				       ((i-1)*1.0/(n-1))*fieldHeight);
       PVector toBall = PVector.sub(ball.position, myTeam.positions[i]);
       toBall.limit(10*robotRadius);
       cmds.targets[i] = PVector.add(homeBase, toBall);
       // determine kick direction by most open angle section
       int numCandidates = 4;
-      PVector vecToGoal = PVector.sub(PVector.add(otherGoalMid, new PVector(0, -this.goalWidth/2.0+30)), myTeam.positions[i]);
-      PVector vecToGoalBottom = PVector.sub(PVector.add(otherGoalMid, new PVector(0, this.goalWidth/2.0-30)), myTeam.positions[i]);
-      float angleOpening = abs(PVector.angleBetween(vecToGoalBottom, vecToGoal));
+      PVector vecToGoal = PVector.sub(PVector.add(
+				      otherGoalMid,
+				      new PVector(0, -this.goalWidth/2.0+30)),
+				      myTeam.positions[i]);
+      PVector vecToGoalBottom = PVector.sub(PVector.add(
+					    otherGoalMid,
+					    new PVector(0,
+					      this.goalWidth/2.0-30)),
+					    myTeam.positions[i]);
+      float angleOpening = abs(PVector.angleBetween(vecToGoalBottom,
+						    vecToGoal));
       float maxOpening = 0;
       int maxCandidate = 0;
       for (int j=0; j<=numCandidates; j++) {
         // calculate distance between shot trajectory and closest robot
-        float minRobotToTrajectory = abs(PVector.dot(new PVector(vecToGoal.y, -vecToGoal.x), otherTeam.positions[0])) / vecToGoal.mag();
+        float minRobotToTrajectory = abs(PVector.dot(new PVector(vecToGoal.y,
+								 -vecToGoal.x),
+				     otherTeam.positions[0])) / vecToGoal.mag();
         int minRobot = 0;
         for (int k=1; k<otherTeam.n; k++) {
-          float robotToTrajectory = abs(PVector.dot(new PVector(vecToGoal.y, -vecToGoal.x), otherTeam.positions[k])) / vecToGoal.mag();
+          float robotToTrajectory = abs(PVector.dot(new PVector(vecToGoal.y,
+								-vecToGoal.x),
+				    otherTeam.positions[k])) / vecToGoal.mag();
           if (robotToTrajectory < minRobotToTrajectory) {
             minRobotToTrajectory = robotToTrajectory;
             minRobot = k;
@@ -158,7 +177,8 @@ class BehaveSimplePassOffense extends Behavior {
         }
         vecToGoal.rotate(angleOpening / (numCandidates - 1));
       }
-      vecToGoalBottom.rotate(-(numCandidates-maxCandidate-1)*angleOpening / (numCandidates - 1));
+      vecToGoalBottom.rotate(-(numCandidates-maxCandidate-1)*angleOpening
+			     / (numCandidates - 1));
       cmds.kicks[i] = vecToGoalBottom;
       if (maxOpening > maxOfOpenings) {
         maxOfOpenings = maxOpening;
@@ -180,7 +200,8 @@ class BehaveSimplePassOffense extends Behavior {
     } else if (!this.side && cmds.targets[1].x > (7.0/8)*this.fieldWidth) {
       cmds.targets[1].x = (7.0/8)*this.fieldWidth;
     }
-    cmds.kicks[1] = PVector.sub(myTeam.positions[maxRobot], myTeam.positions[1]);
+    cmds.kicks[1] = PVector.sub(myTeam.positions[maxRobot],
+				myTeam.positions[1]);
     //cmds.kicks[1] = PVector.sub(otherGoalMid, myTeam.positions[1]);
 
     // goalie
@@ -196,7 +217,8 @@ class BehaveSimplePassOffense extends Behavior {
       goaliePos.add(v);
     }
     cmds.targets[0] = goaliePos;
-    cmds.kicks[0] = PVector.sub(myTeam.positions[maxRobot], myTeam.positions[0]);
+    cmds.kicks[0] = PVector.sub(myTeam.positions[maxRobot],
+				myTeam.positions[0]);
     
     return cmds;
   }
@@ -208,7 +230,11 @@ class BehaveSurroundOffense extends Behavior {
   float fieldWidth, fieldHeight, goalTop, goalBottom, goalWidth;
   PVector goalMid, otherGoalMid;
   
-  public BehaveSurroundOffense(Boolean side_, float fieldWidth_, float fieldHeight_, float goalTop_, float goalBottom_) {
+  public BehaveSurroundOffense(Boolean side_,
+			       float fieldWidth_,
+			       float fieldHeight_,
+			       float goalTop_,
+			       float goalBottom_) {
     super(side_);
     this.side = side_;
     this.fieldWidth = fieldWidth_;
@@ -216,8 +242,12 @@ class BehaveSurroundOffense extends Behavior {
     this.goalTop = goalTop_;
     this.goalBottom = goalBottom_;
     this.goalWidth = abs(goalBottom - goalTop);
-    this.goalMid = new PVector(this.side ? fieldWidth : 0, (goalTop + goalBottom) / 2);
-    this.otherGoalMid = new PVector(this.side ? 0 : fieldWidth, (goalTop + goalBottom) / 2);
+    this.goalMid = new PVector(this.side
+			       ? fieldWidth
+			       : 0, (goalTop + goalBottom) / 2);
+    this.otherGoalMid = new PVector(this.side
+				    ? 0
+				    : fieldWidth, (goalTop + goalBottom) / 2);
   }
   
   public void reset(String msg) {
@@ -226,13 +256,16 @@ class BehaveSurroundOffense extends Behavior {
   public CmdSet update(Team myTeam, Team otherTeam, Ball ball) {
     int n = myTeam.n;
     CmdSet cmds = new CmdSet(n);
-    // let robot 0 be goalie, robot 1 a dribbler controlling the ball, other n-2 robots be in shooting range
+    // let robot 0 be goalie,
+    // robot 1 a dribbler controlling the ball,
+    // other n-2 robots be in shooting range
     // n-2 robots get into shooting range
     int maxRobot = 2;
     float maxOfOpenings = 0;
     PVector secClosestPos = null;
     PVector closestPos = null;
-    /*    for (int i=0; i<otherTeam.n; i++) {
+    /*
+    for (int i=0; i<otherTeam.n; i++) {
       PVector pos = otherTeam.positions[i];
       // assuming side=false (ie, they are defending right side) 
       if (pos.x > closestPos.x) {
@@ -241,7 +274,8 @@ class BehaveSurroundOffense extends Behavior {
       } else if (pos.x > secClosestPos.x) {
 	secClosestPos = pos;
       }
-    }*/
+    }
+    */
     float angles[] = new float[n];
     for (int i=1; i<n; i++) {
       float edgeRat = 1.0 / 128.0;
@@ -252,25 +286,42 @@ class BehaveSurroundOffense extends Behavior {
       PVector homeBase;
       if (i == 2) {
 	float botPY = this.fieldHeight / 8.0;
-        homeBase = new PVector(this.side ? (edgeRat)*this.fieldWidth : (1.0-edgeRat)*this.fieldWidth, botPY);
+        homeBase = new PVector(this.side
+			       ? (edgeRat)*this.fieldWidth
+			       : (1.0-edgeRat)*this.fieldWidth, botPY);
       } else if (i == 3) {
 	float topPY = 7.0 * this.fieldHeight / 8.0;
-        homeBase = new PVector(this.side ? (edgeRat)*this.fieldWidth : (1.0-edgeRat)*this.fieldWidth, topPY);
+        homeBase = new PVector(this.side
+			       ? (edgeRat)*this.fieldWidth
+			       : (1.0-edgeRat)*this.fieldWidth, topPY);
       } else if (i == 4) {
 	//float midPY = this.fieldHeight / 2.0;
 	float midPY = ball.position.y;
-	if (midPY > 9.0 * this.fieldHeight / 16.0) midPY = 9.0 * this.fieldHeight / 16.0;
-	if (midPY < 7.0 * this.fieldHeight / 16.0) midPY = 7.0 * this.fieldHeight / 16.0;
-	//        homeBase = new PVector(this.side ? (midRat)*this.fieldWidth+10*robotRadius : max((1.0-midRat)*this.fieldWidth-10*robotRadius, midBackDist), midPY);
-	homeBase = new PVector(this.side ? (midRat)*this.fieldWidth : (1.0)*this.fieldWidth, midPY);
+	if (midPY > 9.0 * this.fieldHeight / 16.0) {
+	  midPY = 9.0 * this.fieldHeight / 16.0;
+	}
+	if (midPY < 7.0 * this.fieldHeight / 16.0) {
+	  midPY = 7.0 * this.fieldHeight / 16.0;
+	}
+	homeBase = new PVector(this.side
+			       ? (midRat)*this.fieldWidth
+			       : (1.0)*this.fieldWidth, midPY);
       } else if (i == 5) {
 	float farPY = ball.position.y;
-	if (farPY > 9.0 * this.fieldHeight / 16.0) farPY = 9.0 * this.fieldHeight / 16.0;
-	if (farPY < 7.0 * this.fieldHeight / 16.0) farPY = 7.0 * this.fieldHeight / 16.0;
-	homeBase = new PVector(this.side ? (farRat)*this.fieldWidth : (1.0-farRat)*this.fieldWidth, farPY);
+	if (farPY > 9.0 * this.fieldHeight / 16.0) {
+	  farPY = 9.0 * this.fieldHeight / 16.0;
+	}
+	if (farPY < 7.0 * this.fieldHeight / 16.0) {
+	  farPY = 7.0 * this.fieldHeight / 16.0;
+	}
+	homeBase = new PVector(this.side
+			       ? (farRat)*this.fieldWidth
+			       : (1.0-farRat)*this.fieldWidth, farPY);
       } else {
-	// set x coordinate to be halfway between ball and goal, y coord between goal midpoint and ball
-	homeBase = new PVector(this.side ? (1.0/8)*this.fieldWidth : (7.0/8)*this.fieldWidth, ((i-1)*1.0/(n-1))*fieldHeight);
+	homeBase = new PVector(this.side
+			       ? (1.0/8)*this.fieldWidth
+			       : (7.0/8)*this.fieldWidth,
+			       ((i-1)*1.0/(n-1))*fieldHeight);
       }
       PVector toBall = PVector.sub(ball.position, myTeam.positions[i]);
       toBall.limit(10*robotRadius);
@@ -283,18 +334,33 @@ class BehaveSurroundOffense extends Behavior {
 
       // determine kick direction by most open angle section
       int numCandidates = n-2;
-      PVector vecToGoal = PVector.sub(PVector.add(otherGoalMid, new PVector(0, -this.goalWidth/2.0+30)), myTeam.positions[i]);
-      PVector vecToGoalBottom = PVector.sub(PVector.add(otherGoalMid, new PVector(0, this.goalWidth/2.0-30)), myTeam.positions[i]);
-      float angleOpening = abs(PVector.angleBetween(vecToGoalBottom, vecToGoal));
+      PVector vecToGoal = PVector.sub(PVector.add(otherGoalMid,
+						  new PVector(0, 
+							      -goalWidth
+							      /2.0+30)),
+				      myTeam.positions[i]);
+      PVector vecToGoalBottom = PVector.sub(PVector.add(otherGoalMid,
+							new PVector(0,
+								    goalWidth/
+								    2.0-30)),
+					    myTeam.positions[i]);
+      float angleOpening = abs(PVector.angleBetween(vecToGoalBottom,
+						    vecToGoal));
       angles[i] = angleOpening;
       float maxOpening = 0;
       int maxCandidate = 0;
       for (int j=0; j<=numCandidates; j++) {
         // calculate distance between shot trajectory and closest robot
-        float minRobotToTrajectory = abs(PVector.dot(new PVector(vecToGoal.y, -vecToGoal.x), otherTeam.positions[0])) / vecToGoal.mag();
+        float minRobotToTrajectory = abs(PVector.dot(new PVector(vecToGoal.y,
+								 -vecToGoal.x),
+						     otherTeam.positions[0]))
+	  / vecToGoal.mag();
         int minRobot = 0;
         for (int k=1; k<otherTeam.n; k++) {
-          float robotToTrajectory = abs(PVector.dot(new PVector(vecToGoal.y, -vecToGoal.x), otherTeam.positions[k])) / vecToGoal.mag();
+          float robotToTrajectory = abs(PVector.dot(new PVector(vecToGoal.y,
+								-vecToGoal.x),
+						    otherTeam.positions[k]))
+	    / vecToGoal.mag();
           if (robotToTrajectory < minRobotToTrajectory) {
             minRobotToTrajectory = robotToTrajectory;
             minRobot = k;
@@ -306,27 +372,34 @@ class BehaveSurroundOffense extends Behavior {
         }
         vecToGoal.rotate(angleOpening / (numCandidates - 1));
       }
-      vecToGoalBottom.rotate(-(numCandidates-maxCandidate-1)*angleOpening / (numCandidates - 1));
+      vecToGoalBottom.rotate(-(numCandidates-maxCandidate-1)*angleOpening
+			     / (numCandidates - 1));
       float passRat = 3.0 / 4.0;
-      //    PVector dribblerToBall = PVector.sub(myTeam.positions[1], ball.position);
-      //    if (dribblerToBall.mag() <= 14) { // touching the ball
       if (i == 3) {
 	// TODO Make into function
 	boolean open = true;
 	for (int j = 0; j < otherTeam.n; j++) {
-	  PVector amp = PVector.sub(myTeam.positions[i], otherTeam.positions[j]);
-	  PVector nd = PVector.sub(myTeam.positions[2], myTeam.positions[3]);
+	  PVector amp = PVector.sub(myTeam.positions[i],
+				    otherTeam.positions[j]);
+	  PVector nd = PVector.sub(myTeam.positions[2],
+				   myTeam.positions[3]);
 	  nd.mult(amp.dot(nd));
 	  if ((PVector.sub(amp, nd)).mag() < 20) {
 	    open = false;
 	    break;
 	  }
 	}
-	PVector dribblerToBall2 = PVector.sub(myTeam.positions[2], ball.position);
-	PVector dribblerToBall3 = PVector.sub(myTeam.positions[3], ball.position);
-	if (open && angles[2] > passRat * angles[3] && dribblerToBall3.mag() <= 14) {
+	PVector dribblerToBall2 = PVector.sub(myTeam.positions[2],
+					      ball.position);
+	PVector dribblerToBall3 = PVector.sub(myTeam.positions[3],
+					      ball.position);
+	if (open
+	    && angles[2] > passRat * angles[3]
+	    && dribblerToBall3.mag() <= 14) {
 	  cmds.kicks[3] = PVector.sub(myTeam.positions[2], myTeam.positions[3]);
-	} else if (open && angles[3] > passRat * angles[2] && dribblerToBall2.mag() <= 14) {
+	} else if (open
+		   && angles[3] > passRat * angles[2]
+		   && dribblerToBall2.mag() <= 14) {
 	  cmds.kicks[2] = PVector.sub(myTeam.positions[3], myTeam.positions[2]);
 	} else {
 	  cmds.kicks[i] = vecToGoalBottom;
@@ -348,7 +421,8 @@ class BehaveSurroundOffense extends Behavior {
     } else if (!this.side && cmds.targets[1].x > (7.0/8)*this.fieldWidth) {
       cmds.targets[1].x = (7.0/8)*this.fieldWidth;
     }
-    cmds.kicks[1] = PVector.sub(myTeam.positions[maxRobot], myTeam.positions[1]);
+    cmds.kicks[1] = PVector.sub(myTeam.positions[maxRobot],
+				myTeam.positions[1]);
     
     // goalie
     PVector v = PVector.sub(goalMid, ball.position);
@@ -363,7 +437,8 @@ class BehaveSurroundOffense extends Behavior {
       goaliePos.add(v);
     }
     cmds.targets[0] = goaliePos;
-    cmds.kicks[0] = PVector.sub(myTeam.positions[maxRobot], myTeam.positions[0]);
+    cmds.kicks[0] = PVector.sub(myTeam.positions[maxRobot],
+				myTeam.positions[0]);
     
     return cmds;
   }
