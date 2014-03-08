@@ -97,13 +97,28 @@ class BehaveAlexDefense extends BehaveBlockDefense {
       }
       
       cmds.targets[i] = newPos;//call to indicator robot
+      int passTo=0;
       if(ball.position.y>fieldHeight/2){
-      cmds.kicks[i] = PVector.sub(new PVector(random(0,.25)*fieldWidth,fieldHeight-random(0,.5)*fieldHeight), myTeam.positions[i]);//generates kicking positions of robots
+        for(int k=1; k<n; k++){
+          if(myTeam.positions[k].x<myTeam.positions[i].x&&myTeam.positions[k].y>myTeam.positions[i].y){
+            cmds.kicks[i]=PVector.sub(myTeam.positions[k],myTeam.positions[i]);
+          }
+          else{
+          cmds.kicks[i] = PVector.sub(new PVector(random(0,.25)*fieldWidth,fieldHeight-random(0,.5)*fieldHeight), myTeam.positions[i]);//generates kicking positions of robots
+          }
+        }
       }
       else{
-        cmds.kicks[i]= PVector.sub(new PVector(random(0,.25)*fieldWidth,random(0,.5)*fieldHeight), myTeam.positions[i]);
+        for(int k=1; k<n; k++){
+          if(myTeam.positions[k].x<myTeam.positions[i].x&&myTeam.positions[k].y<myTeam.positions[i].y){
+            cmds.kicks[i]=PVector.sub(myTeam.positions[k],myTeam.positions[i]);
+          }
+          else{
+          cmds.kicks[i]= PVector.sub(new PVector(random(0,.25)*fieldWidth,random(0,.5)*fieldHeight), myTeam.positions[i]);
+          }
+        }  
       }
-    }
+      }
     //}
        
      // Goalie robot
