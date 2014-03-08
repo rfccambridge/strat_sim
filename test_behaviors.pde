@@ -57,18 +57,81 @@ class BehaveBlockDefense extends Behavior {
     // Non goalie robots
     for (int i=1; i<n; i++) {
       // set x coordinate to be halfway between ball and goal, y coord between goal midpoint and ball
-      PVector newPos = PVector.add(ball.position, v);
-      // can't be in goalie area
+      PVector standard = PVector.add(ball.position, v);
+      PVector newPos = new PVector();
+      newPos.x = 100;
+      newPos.y = 5;
+      if (i< 3) {
+        PVector d = new PVector(0,((i-1)*2 - 1)*robotRadius);
+        newPos = PVector.add(standard, d);
+        int r =  2 + (int) Math.ceil(2.0*Math.random()); 
+        cmds.kicks[i] = PVector.sub(myTeam.positions[r],newPos); 
+      }  
+      
+      if (2 < i && i < 5){
+        int k = i - 3;
+        newPos = PVector.sub(goalMid, standard);
+        newPos.rotate(2*(k - 0.5)*60.0);
+        newPos = PVector.add(goalMid, newPos);
+        if (newPos.x > this.fieldWidth * .70){
+          PVector d = new PVector(0,-1*(k*24 - 12)*robotRadius);
+          newPos = PVector.add(standard, d);
+          if (i == 3){
+            cmds.kicks[i] = PVector.sub(myTeam.positions[5], myTeam.positions[i]);
+          } else {
+            cmds.kicks[i] = PVector.sub(otherGoalMid, myTeam.positions[i]);
+          } 
+        }
+        
+        //PVector d = new PVector(0,((k-1)*30 - 15)*robotRadius);
+        //newPos = PVector.add(newPos, d);
+        //cmds.kicks[i] = PVector.sub(otherGoalMid, myTeam.positions[i]);
+        if (PVector.sub(ball.position, newPos).mag() < 150){
+          newPos = ball.position;
+        }
+      }
+      
+      if (i == 5){
+        newPos = new PVector();
+        newPos.x = this.fieldWidth * 0.65;
+        newPos.y = this.fieldHeight * 0.9;
+        if (PVector.sub(ball.position, newPos).mag() < 250){
+          newPos = ball.position;
+        }
+        cmds.kicks[i] = PVector.sub(otherGoalMid, myTeam.positions[i]);
+      }
+      //if (i<2) {
+         //newPos.x = 5.5;
+         //newPos.y = 5.5;
+      //}  else if (i < 4){
+         //newPos = PVector.add(ball.position, v);
+         //if (i<3){
+           //newPos.y = newPos.y + (float)(40.0 * Math.pow((double) fieldWidth/ (double) ball.position.x, 1.3));
+         //} else {
+           //newPos.y = newPos.y - (float)(40.0 * Math.pow((double) fieldWidth/ (double)ball.position.x, 1.3));
+         //}
+      //} else {
+        //if (i == 4){ 
+          //v.y = v.y + 10.0;
+        //}
+        //if (i == 5) v.y = v.y - 10.0;
+        //newPos = PVector.add(ball.position, v);
+      //}
+      //if (newPos.x < (this.fieldWidth/2.0)){
+        //newPos.x = this.fieldWidth/2.0;
+      //}
+      
       if (this.side && newPos.x > ((7.0/8)*this.fieldWidth)) {
         newPos.x = (7.0/8)*this.fieldWidth;
-      } else if (!this.side && newPos.x < ((1.0/8)*this.fieldWidth)) {
-        newPos.x = (1.0/8)*this.fieldWidth;
-      }
-      if (this.wall) {
-        newPos.y += (i-(n-1)/2.0) * 2 * robotRadius; // stagger robots in vertical wall
+      } else if (!this.side && newPos.x < ((4.0/8)*this.fieldWidth)) {
+        newPos.x = (4.0/8)*this.fieldWidth;
       }
       cmds.targets[i] = newPos;
-      cmds.kicks[i] = PVector.sub(otherGoalMid, myTeam.positions[i]);
+      //if (i < 4){
+        //cmds.kicks[i] = PVector.sub(myTeam.positions[4], myTeam.positions[i]);
+      //} else {
+         //cmds.kicks[i] = PVector.sub(otherGoalMid, myTeam.positions[i]);
+      //}
     }
     
     // Goalie robot
@@ -83,7 +146,9 @@ class BehaveBlockDefense extends Behavior {
       goaliePos.add(v);
     }
     cmds.targets[0] = goaliePos;
-    cmds.kicks[0] = PVector.sub(otherGoalMid, myTeam.positions[0]);
+    int r =  2 + (int) Math.ceil(2.0*Math.random()); 
+    cmds.kicks[0] = PVector.sub(myTeam.positions[r],goaliePos); 
+    //cmds.kicks[0] = PVector.sub(otherGoalMid, myTeam.positions[0]);
     return cmds;
   }
 }
