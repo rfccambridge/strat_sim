@@ -25,8 +25,8 @@ void setup() {
   
   robots = new Robot[countB+countR];
   ball = new SoccerBall();
-  coachA = new BehaveWallDefense(true, width, height, (height-goal_width)/2, (height+goal_width)/2);
-  coachR = new BehaveSimplePassOffense(false, width, height, (height-goal_width)/2, (height+goal_width)/2);
+  coachA = new BehaveSimplePassOffense(false, width, height, (height-goal_width)/2, (height+goal_width)/2);
+  coachR = new BehaveBlockDefense(true, true, width, height, (height-goal_width)/2, (height+goal_width)/2);
   
   reset();
 }

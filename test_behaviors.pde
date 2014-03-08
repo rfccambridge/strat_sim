@@ -89,13 +89,13 @@ class BehaveBlockDefense extends Behavior {
 }
 
 class BehavePointDefense extends BehaveBlockDefense {
-  public BehavePointDefense(Boolean side_, float fieldWidth_, float fieldHeight_, float goalTop_, float goalBottom_) {
+  public BehavePointDefense(Boolean side_, int fieldWidth_, int fieldHeight_, float goalTop_, float goalBottom_) {
     super(side_, false, fieldWidth_, fieldHeight_, goalTop_, goalBottom_);
   }
 }
 
 class BehaveWallDefense extends BehaveBlockDefense {
-  public BehaveWallDefense(Boolean side_, float fieldWidth_, float fieldHeight_, float goalTop_, float goalBottom_) {
+  public BehaveWallDefense(Boolean side_, int fieldWidth_, int fieldHeight_, int goalTop_, int goalBottom_) {
     super(side_, true, fieldWidth_, fieldHeight_, goalTop_, goalBottom_);
   }
 }
@@ -106,7 +106,7 @@ class BehaveSimplePassOffense extends Behavior {
   float fieldWidth, fieldHeight, goalTop, goalBottom, goalWidth;
   PVector goalMid, otherGoalMid;
   
-  public BehaveSimplePassOffense(Boolean side_, float fieldWidth_, float fieldHeight_, float goalTop_, float goalBottom_) {
+  public BehaveSimplePassOffense(Boolean side_, int fieldWidth_, int fieldHeight_, int goalTop_, int goalBottom_) {
     super(side_);
     this.side = side_;
     this.fieldWidth = fieldWidth_;

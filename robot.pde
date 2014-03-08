@@ -12,6 +12,8 @@ class Robot extends Ball {
   float noise_scale = 2; 
   float kick_range = 10;
   
+  
+  
   public Robot() {
     super(random(width),random(height),10,13,color(100,100,100));
   }
