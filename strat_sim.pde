@@ -121,7 +121,7 @@ int robotRadius=2; //provisionally
       if (abs(position.y - height/2) < goal_width/2) {
         // goal
         scoreR++;
-        //reset();
+        reset();
       }
     } 
     else if (position.x < r) {
@@ -459,11 +459,11 @@ float HowOffensive(Robot robots[], SoccerBall ball)// assuming "we" are team red
         ourdistances[i]=diff1;}
     int a=0;
     for (int j=countR; j<countR+countB; j++)
-      { PVector b1 = robots[i].position;
+      { PVector b1 = robots[j].position;
          PVector b2 = ball.position; 
        PVector b3 = PVector.sub(b1,b2);
         float diff2 = b3.mag(); 
-        theirdistances[i]=diff2;
+        theirdistances[a++]=diff2;
       }
     ourdistances=sort(ourdistances); 
     theirdistances=sort(theirdistances); 
@@ -497,7 +497,7 @@ void setup() {
   coachR = new BehaveSimplePassOffense(false, width, height, (height-goal_width)/2, (height+goal_width)/2);
   coachA = new BehaveBlockDefense(true, true, width, height, (height-goal_width)/2, (height+goal_width)/2);
   }
-  //reset();
+  reset();
 }
 
 void draw() {
