@@ -1,5 +1,5 @@
 
-class SoccerBall extends Ball {
+/*class SoccerBall extends Ball {
   
   float friction = .14;
   
@@ -52,5 +52,7 @@ class SoccerBall extends Ball {
       velocity.y *= bnc;
     }
     }
+*/
 
-}
+
+

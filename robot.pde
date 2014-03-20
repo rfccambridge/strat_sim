@@ -1,6 +1,4 @@
-
-
-class Robot extends Ball {
+/*class Robot extends Ball {
   
   // movement
   float max_accel = 3;
@@ -97,7 +95,7 @@ class CmdSet {
     }
   }
 }
-    
+*/   
     
     
   
