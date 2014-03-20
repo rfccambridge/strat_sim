@@ -3,28 +3,17 @@
  * by Erik Schluntz, RFC Cambridge
  * 
  */
- int goal_width = 150;
- int countB = 6; // defends the right
+int goal_width = 150;
+int countB = 6; // defends the right
 int countR = 6; // defends the left
-
-int scoreB = 0;
-int scoreR = 0;
-int time = 0;
 
 int robotRadius=2; //provisionally
 
-  
-//int goal_width = 150;
 
 Robot [] robots;
-/*int countB = 6; // defends the right
-int countR = 6; // defends the left
-
-int scoreB = 0;
-int scoreR = 0;
-int time = 0;*/
-
-Behavior coachA;
+int scoreB;
+int scoreR;
+Behavior coachB;
 Behavior coachR;
 
 SoccerBall ball;
@@ -36,8 +25,10 @@ void setup() {
   robots = new Robot[countB+countR];
   ball = new SoccerBall();
   
-  coachA = new BehaveNothing(false);
+  coachB = new BehaveNothing(false);
   coachR = new BehaveNothing(true);
+  scoreB = 0;
+  scoreR = 0;
   
   reset();
 }
@@ -55,10 +46,10 @@ void draw() {
   ellipse(width/2,height/2,200,200);
   
   // thinking
-  Team scoreB = collect(robots,countB,countR,true);
+  Team teamB = collect(robots,countB,countR,true);
   Team teamR = collect(robots,countB,countR,false);
-  CmdSet cB = coachA.update(scoreB,teamR,new SoccerBall(ball));
-  CmdSet cR = coachR.update(teamR,scoreB,new SoccerBall(ball));
+  CmdSet cB = coachB.update(teamB,teamR,new SoccerBall(ball));
+  CmdSet cR = coachR.update(teamR,teamB,new SoccerBall(ball));
   CmdSet cAll = new CmdSet(countB+countR);
   cAll.targets = (PVector[])concat(cB.targets,cR.targets);
   cAll.kicks = (PVector[])concat(cB.kicks,cR.kicks);
@@ -83,9 +74,6 @@ void draw() {
   
   manualControl(robots,ball);
   
-  time++;
-  
-  println(HowOffensive(robots,ball));
 }
 
 public void manualControl(Robot robots[], SoccerBall ball) {
@@ -108,8 +96,8 @@ public void manualControl(Robot robots[], SoccerBall ball) {
 
 public void reset() {
   println("Goal!");
-  println("TeamA: " + scoreB + " Team Red: " + scoreR + " time: " + time);
-  coachA.reset("start1");
+  println("Team Blue: " + scoreB + " Team Red: " + scoreR);
+  coachB.reset("start1");
   coachR.reset("start2");
   
   for (int i=0; i<countB; i++) {
