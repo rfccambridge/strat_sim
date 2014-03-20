@@ -1,5 +1,4 @@
-
-/*class SoccerBall extends Ball {
+class SoccerBall extends Ball {
   
   float friction = .14;
   
@@ -23,7 +22,7 @@
     super.update();
   }
   
-    public void checkBoundaryCollision() {
+  public void checkBoundaryCollision() {
     if (position.x > width-r) {
       position.x = width-r;
       velocity.x *= bnc;
@@ -51,8 +50,7 @@
       position.y = r;
       velocity.y *= bnc;
     }
-    }
-*/
-
+  }
+}
 
 

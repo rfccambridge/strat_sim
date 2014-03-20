@@ -3,7 +3,7 @@
   handles bouncing for robots and soccerball
 */
 
-/*abstract class Ball {
+abstract class Ball {
   
   PVector position;
   PVector velocity;
@@ -77,4 +77,4 @@
       
     }
   }
-}*/
+}

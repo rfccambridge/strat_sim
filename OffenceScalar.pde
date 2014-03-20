@@ -1,4 +1,4 @@
-/*float HowOffensive(Robot robots[], SoccerBall ball)// assuming "we" are team red. The function takes the robots and the ball as its input 
+float HowOffensive(Robot robots[], SoccerBall ball)// assuming "we" are team red. The function takes the robots and the ball as its input 
                                                    //and uses their positions to determine how offensive a c ertain team's position is. 
 {
   float scalar;
@@ -14,11 +14,11 @@
         ourdistances[i]=diff1;}
     int a=0;
     for (int j=countR; j<countR+countB; j++)
-      { PVector b1 = robots[i].position;
+      { PVector b1 = robots[j].position;
          PVector b2 = ball.position; 
        PVector b3 = PVector.sub(b1,b2);
         float diff2 = b3.mag(); 
-        theirdistances[i]=diff2;
+        theirdistances[j-6]=diff2;
       }
     ourdistances=sort(ourdistances); 
     theirdistances=sort(theirdistances); 
@@ -34,7 +34,6 @@
     return scalar; 
     
 }
-*/
    
     
         

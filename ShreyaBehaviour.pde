@@ -21,8 +21,9 @@
   
   public CmdSet update(Team myTeam, Team otherTeam, Ball ball) {
     float othersd[] = new float[countB];
-    for (int j=countA; j<countB+countA; j++)
-        {othersd[i++]= (robots[i].position.x - ball.position.x)^2 + (robots[i].position.y - ball.position.y)^2;} 
+    for (int j=countA; j<countB+countA; j++) {
+      othersd[i++]= (robots[i].position.x - ball.position.x)^2 + (robots[i].position.y - ball.position.y)^2;
+    } 
     float minothers () { //stores the distances of all the opposing players from the ball.  
         float min = othersd[0]; 
         int i=1;
@@ -133,4 +134,5 @@
     
     return cmds;
   }
-}*/
+}
+*/
