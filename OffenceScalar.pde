@@ -2,8 +2,10 @@ float HowOffensive(Robot robots[], SoccerBall ball)// assuming "we" are team red
                                                    //and uses their positions to determine how offensive a c ertain team's position is. 
 {
   float scalar;
+  int [] factors = {5,3,3,2,2}; 
   float [] ourdistances = new float [6];
   float [] theirdistances = new float [6];
+  float sum=0;
   
     for (int i=0; i<countR; i++)
         {
@@ -22,7 +24,9 @@ float HowOffensive(Robot robots[], SoccerBall ball)// assuming "we" are team red
       }
     ourdistances=sort(ourdistances); 
     theirdistances=sort(theirdistances); 
-    float mediandiff= 500+ theirdistances[3]-ourdistances[3]; //If the median distance of "our" team from the ball is greater than the median distance of the other team, 
+    //float mediandiff= 500+ 
+      for (int i=0; i<countR-1; i++)
+        {sum+=(theirdistances[i]-ourdistances[i])*factors[i];} //If the median distance of "our" team from the ball is greater than the median distance of the other team, 
                                                             //our position is less offenive. Using the median seems to make sense here because it contains and uses information
                                                             //on the actual number of players within a certain radius. 
                                                             //The number added (5 for now) should make mediandiff positive so that the factor
@@ -30,7 +34,8 @@ float HowOffensive(Robot robots[], SoccerBall ball)// assuming "we" are team red
     
     float factor= pow((width/2)/(ball.position.x),(1/2)); // This takes into account the side of the field that the ball is on. The value is very large close to the goal and close to 1/2  
                                                //near the other goal. 
-    scalar= mediandiff*factor/100; 
+    float measure= sum +10000;
+    scalar= measure*factor/500; 
     return scalar; 
     
 }
