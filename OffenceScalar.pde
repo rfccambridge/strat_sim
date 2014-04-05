@@ -2,7 +2,7 @@ float HowOffensive(Robot robots[], SoccerBall ball)// assuming "we" are team red
                                                    //and uses their positions to determine how offensive a c ertain team's position is. 
 {
   float scalar;
-  int [] factors = {5,3,3,2,2}; 
+  int [] factors = {6,4,3,1,1}; 
   float [] ourdistances = new float [6];
   float [] theirdistances = new float [6];
   float sum=0;
@@ -32,10 +32,11 @@ float HowOffensive(Robot robots[], SoccerBall ball)// assuming "we" are team red
                                                             //The number added (5 for now) should make mediandiff positive so that the factor
                                                             //of the next line affects the scalar in the same way irrespective of whether the median difference is positive or negative.  
     
-    float factor= pow((width/2)/(ball.position.x),(1/2)); // This takes into account the side of the field that the ball is on. The value is very large close to the goal and close to 1/2  
+    //float factor= pow((width/2)/(ball.position.x),(1/2)); // This takes into account the side of the field that the ball is on. The value is very large close to the goal and close to 1/2  
                                                //near the other goal. 
-    float measure= sum +10000;
-    scalar= measure*factor/500; 
+    //sum = sum - float(ball.position.x)*0.25
+    float measure= sum + 10000.0;
+    scalar= measure/500; 
     return scalar; 
     
 }
